@@ -1,6 +1,6 @@
 {
 	"name": "国培学习助手",
-	"version": "1.0.3.31",
+	"version": "1.0.4.2",
 	"manifest_version": 2,
 	"description": "jntspx.chinahrt.com：屏蔽焦点离开自动暂停；课程章节自动学习；允许视频拖动，设置视频倒数n秒播放",
 	"author": "Jason Lee",
