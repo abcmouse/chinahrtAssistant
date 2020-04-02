@@ -1,0 +1,54 @@
+{
+	"name": "国培学习助手",
+	"version": "1.0.3.31",
+	"manifest_version": 2,
+	"description": "jntspx.chinahrt.com：屏蔽焦点离开自动暂停；课程章节自动学习；允许视频拖动，设置视频倒数n秒播放",
+	"author": "Jason Lee",
+	"icons": {
+	       "48": "images/chinahrt.ico",
+	       "128": "images/chinahrt.ico"
+	},
+	"browser_action": 
+	{
+		"default_icon": "images/chinahrt.ico",
+		"default_title": "国培学习助手",
+		"default_popup": "options.html"
+	},
+	"background" : {
+        "scripts": ["js/background.js"],
+        "persistent": false
+    },
+	"content_scripts": [
+		{
+			"matches": [
+				"*://jntspx.chinahrt.com/user/login*",
+				"*://videoadmin1.chinahrt.com.cn/videoPlay/play*",
+				"*://jntspx.chinahrt.com/userStudyResource/studyResourceDetailInfo*"
+			],
+			"js": ["js/jquery-3.4.1.min.js", "js/content.js"],
+			"run_at": "document_start",
+			"all_frames": true
+		}
+	],
+	"permissions": [
+		"*://*.chinahrt.com/",
+		"*://*.chinahrt.com.cn/",
+		"tabs",
+		"storage"
+	],
+	"web_accessible_resources": [
+		"js/hrtlogininject.js",
+		"js/hrtstudyinject.js",
+		"js/hrtvideoinject.js",
+		"js/options.js",
+		"js/sweetalert.min.js",
+		"js/jquery-3.4.1.min.js",
+		"css/sweetalert.css"
+	],
+	"options_ui":{
+	    "page": "options.html",
+	    "chrome_style": false,
+	    "open_in_tab": false
+	},
+	"homepage_url": "http://www.baidu.com"
+}

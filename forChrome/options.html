@@ -1,0 +1,75 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>国培学习助手</title>
+  <style type="text/css">
+    body {margin:5px 10px 10px 10px;padding:0px}
+	.dialog{
+        background-color: #ffffff;
+        border: 0px solid rgba(45, 121, 211, 0);
+        width: 320px;
+        height: 240px;
+        left: 0px;
+        top: 0px;
+        margin: 0 0 0 0;
+        padding: 0px;
+        border-radius: 0px;
+        font-family:"微软雅黑", "Times New Roman";
+        font-size: 10pt;
+        color: #000000;
+        box-shadow: 0px 0px 0px 0px rgba(128, 128, 128, 1);
+        filter:alpha(Opacity=100);-moz-opacity:1;opacity:1;
+    }
+    .usrinfo {
+        height:30px;
+        line-height:30px;
+        margin:0px 0px 0px -10px;
+        display:none;
+    }
+    #options ul {list-style:none;margin:0px 0px 0px -10px;}
+    #options ul li {height:36px;line-height:36px;}
+    #userInfo, #videoSeek {opacity:0.5;}
+    #userInfo ul li, #videoSeek ul li {height:24px;line-height:24px;margin:0px 0px 0px -10px;}
+    #userName, #UserPswd {width:140px;border:1px solid #C0C0C0;padding:0px 3px 0px 3px;}
+    #videoSeekPos, #oneDayMaxTime {ime-mode:disabled;width:36px;border:0px solid #C0C0C0;padding:0px 3px 0px 3px;}
+    label {cursor:pointer;}
+    #userInfo span {color:#ff0000;font-size:8pt;display:none;}
+    #videoSeek span {color:#c0c0c0;font-size:8pt;display:block;margin:0px 0px 0px 0px;}
+    .pwd {
+        position:relative;
+        top: 0px;
+        width: 14px;
+        margin: 0 0 0 -22px;
+        cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="dialog">
+    <div id="options">
+    <ul>
+    <li><input type="checkbox" id="autoLogin" value="0" tabindex="1"><label for="autoLogin" style="">自动登录国培平台</label></li>
+      <div id="userInfo">
+        <ul>
+          <li>用户名称：<input type="text" id="userName" value="" disabled tabindex="2" placeholder="用户名称"></li>
+          <li>用户密码：<input type="password" id="userPswd" value="" disabled tabindex="3" placeholder="用户密码"><img id="passwordEye" src="./images/eyevi.png" class="pwd"/></li>
+        </ul>
+      </div>
+    <li><input type="checkbox" id="onBlurPause" value="1" checked tabindex="4"><label for="onBlurPause">取消焦点离开视频后暂停播放</label></li>
+    <li><input type="checkbox" id="videoAutoPlay" value="1" checked tabindex="5"><label for="videoAutoPlay">设置进入课程页面后视频自动播放</label></li>
+    <li><input type="checkbox" id="videoCanSeek" value="0" tabindex="6"><label for="videoCanSeek">设置视频可调节进度</label></li>
+      <div id="videoSeek">
+        <ul>
+        <li>设置视频播放位置：<input type="text" id="videoSeekPos" value="0" maxlength="3" disabled tabindex="7"> 秒后播放结束</li>
+        <li><span>* 不设置或者设置0，表示不调整播放位置</span></li>
+        </ul>
+      </div>
+    <li><input type="checkbox" id="chapterAutoPlay" value="1" checked tabindex="8"><label for="chapterAutoPlay">设置课程章节自动学习，跳过已完成章节</label></li>
+    <li><input type="checkbox" id="courseOverTips" checked value="1" tabindex="9"><label for="courseOverTips">课程学习完成后弹出提示</label></li>
+    <li><input type="checkbox" id="chkMaxTime" value="0" tabindex="10" checked><label for="chkMaxTime">限制每天学习 <input type="text" id="oneDayMaxTime" value="3600" maxlength="4" tabindex="11" checked> 秒后停止自动学习</label></li>
+    </ul>
+    </div>
+  </div>
+  <script src="js/options.js"></script>
+</body>
+</html>
