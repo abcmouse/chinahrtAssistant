@@ -1,0 +1,36 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>国培学习助手</title>
+  <link rel="stylesheet" href="../css/options.css" type="text/css" />
+</head>
+<body>
+  <div class="dialog">
+    <div id="options">
+    <ul class="mcd-menu">
+    <li><div><input type="checkbox" id="autoLogin" value="0" tabindex="1"><label for="autoLogin" style="">自动登录国培平台</label></div></li>
+      <div id="userInfo">
+        <ul>
+          <li>用户名称：<input type="text" id="userName" value="" disabled tabindex="2" placeholder="用户名称"></li>
+          <li>用户密码：<input type="password" id="userPswd" value="" disabled tabindex="3" placeholder="用户密码"><img id="passwordEye" src="../images/eyevi.png" class="pwd"/></li>
+        </ul>
+      </div>
+    <li class="liborderboth"><div><input type="checkbox" id="onBlurPause" value="1" checked tabindex="4"><label for="onBlurPause">取消焦点离开视频后暂停播放</label></div></li>
+    <li class="liborderbtm"><div><input type="checkbox" id="videoAutoPlay" value="1" checked tabindex="5"><label for="videoAutoPlay">设置进入课程页面后视频自动播放</label></div></li>
+    <li><div><input type="checkbox" id="videoCanSeek" value="0" tabindex="6"><label for="videoCanSeek">设置视频可调节进度</label></div></li>
+      <div id="videoSeek">
+        <ul>
+        <li>设置视频播放位置：<input type="text" id="videoSeekPos" value="0" maxlength="3" disabled tabindex="7"> 秒后播放结束</li>
+        <li><span>* 不设置或者设置0，表示不调整播放位置</span></li>
+        </ul>
+      </div>
+    <li class="liborderboth"><div><input type="checkbox" id="chapterAutoPlay" value="1" checked tabindex="8"><label for="chapterAutoPlay">设置课程章节自动学习，跳过已完成章节</label></div></li>
+    <li class="liborderbtm"><div><input type="checkbox" id="courseOverTips" checked value="1" tabindex="9"><label for="courseOverTips">课程学习完成后弹出提示</label></div></li>
+    <li><div><input type="checkbox" id="chkMaxTime" value="0" tabindex="10" checked><label for="chkMaxTime">限制每天学习 <input type="text" id="oneDayMaxTime" value="3600" maxlength="4" tabindex="11" checked> 秒后停止自动学习</label></div></li>
+    </ul>
+    </div>
+  </div>
+  <script src="../js/options.js"></script>
+</body>
+</html>

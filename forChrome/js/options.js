@@ -99,7 +99,7 @@ function passwordEye_click(){
 	let oPwd = document.getElementById("userPswd");
 	let oEye = document.getElementById("passwordEye");
 	oPwd.type = (oPwd.type=="password")?"text":"password";
-	oEye.src = (oPwd.type=="text")?"./images/eyein.png":"./images/eyevi.png";
+	oEye.src = (oPwd.type=="text")?"../images/eyein.png":"../images/eyevi.png";
 }
 
 function videoCanSeek_click(){
