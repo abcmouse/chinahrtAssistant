@@ -64,6 +64,11 @@
 }
 label {
     cursor:pointer;
+    vertical-align: middle;
+}
+input {
+    vertical-align: middle;
+    BACKGROUND-COLOR: transparent;
 }
 #userInfo span {
     color:#ff0000;
@@ -78,7 +83,7 @@ label {
 }
 .pwd {
     position:relative;
-    top: 0px;
+    top: 1px;
     width: 14px;
     margin: 0 0 0 -22px;
     cursor:pointer;
