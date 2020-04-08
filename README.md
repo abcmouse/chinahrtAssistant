@@ -6,7 +6,6 @@
 
 网址：https://github.com/abcmouse/chinahrtAssistant
 
-
 功能说明：
 
   1.屏蔽焦点离开自动暂停；
