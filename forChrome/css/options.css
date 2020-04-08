@@ -184,7 +184,7 @@ input {
     display: none;
 }
 .toggle input:checked + label {
-    background-color: #29d64b;
+    background-color: #21ad3d;
 }
 .toggle input:checked + label:before {
     transform: translateX(14px);

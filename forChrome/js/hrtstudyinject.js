@@ -6,4 +6,6 @@ const _HrtDomain = {
 	"isDayMaxTime":"isDayMaxTime"
 }
 
-function businessLog(userName,dataId,dataType,operateType,dataRelationId,sourceId,stayTime,actualLearnTime) {};
+function businessLog(userName,dataId,dataType,operateType,dataRelationId,sourceId,stayTime,actualLearnTime) {
+	console.log("businessLog");
+};

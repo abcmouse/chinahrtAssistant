@@ -1,6 +1,6 @@
 {
 	"name": "国培学习助手",
-	"version": "1.0.4.2",
+	"version": "1.0.4.8",
 	"manifest_version": 2,
 	"description": "jntspx.chinahrt.com：屏蔽焦点离开自动暂停；课程章节自动学习；允许视频拖动，设置视频倒数n秒播放",
 	"author": "Jason Lee",
@@ -21,11 +21,25 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"*://jntspx.chinahrt.com/user/login*",
-				"*://videoadmin1.chinahrt.com.cn/videoPlay/play*",
+				"*://jntspx.chinahrt.com/user/login*"
+			],
+			"js": ["js/hrtlogincontent.js"],
+			"run_at": "document_start",
+			"all_frames": true
+		},
+		{
+			"matches": [
+				"*://videoadmin1.chinahrt.com.cn/videoPlay/play*"
+			],
+			"js": ["js/hrtvideocontent.js"],
+			"run_at": "document_start",
+			"all_frames": true
+		},
+		{
+			"matches": [
 				"*://jntspx.chinahrt.com/userStudyResource/studyResourceDetailInfo*"
 			],
-			"js": ["js/jquery-3.4.1.min.js", "js/content.js"],
+			"js": ["js/jquery-3.4.1.min.js", "js/hrtstudycontent.js"],
 			"run_at": "document_start",
 			"all_frames": true
 		}

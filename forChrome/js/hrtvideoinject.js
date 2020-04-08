@@ -64,7 +64,7 @@ function doVideoPlay() {
 	window.attrset.ifShowPauseAd = false;
 	window.attrset.ifPauseBlur = false;
 	window.attrset.ifRecord = true;
-	window.attrset.autoPlay = 1;
+	if (_VideoConfig.videoAutoPlay == "1") {window.videoObject.autoplay = true;};
 	setVideoStartTime();
 	window.addEventListener("message", msgHandler, false);
 	setVideoControl();
@@ -132,14 +132,15 @@ function doVideoControl() {
 	
 	if (_VideoConfig.onBlurPause == "1") {
 		window.player.removeListener("pause", pauseHandler);
-		//window.player.removeListener('play',playHandler);
 		window.onblur=function(){};
 		window.onfocus=function(){};
 	}
 	
+	/*
 	if (_VideoConfig.videoAutoPlay == "1") {
 		window.player.videoPlay();
 	}
+	*/
 	
 	if (_VideoConfig.videoCanSeek == "1") {
 		let nTime = 0;
@@ -151,6 +152,5 @@ function doVideoControl() {
 		}
 	}
 }
-
 
 doVideoPlay();
