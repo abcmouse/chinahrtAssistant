@@ -5,12 +5,14 @@ const _HrtDomain = {
 		"study":"http://jntspx.chinahrt.com/userStudyResource/studyResourceDetailInfo"
 	},
 	"message":{
-		"isVideoConfig":"isVideoConfig",
-		"isCourseConfig":"isCourseConfig"
+		"isVideoConfig":"isHrtVideoConfig",
+		"isCourseConfig":"isHrtCourseConfig"
 	}
 }
 
-window.onload = windowOnLoad();
+window.onload = function() {
+	windowOnLoad();
+}
 
 function sendMessageToContentScript(message, callback) {
 	chrome.tabs.query({}, function(tabs)
@@ -54,7 +56,7 @@ function windowOnLoad() {
 	
 	oTip.addEventListener('click', overTips_click);
 	oCap.addEventListener('click', overTips_click);
-	oCmt.addEventListener('click', overTips_click);
+	oCmt.addEventListener('click', checkMaxTime_click);
 	oDmt.addEventListener('change', overTips_click);
 	oDmt.addEventListener('input', function(){this.value=this.value.replace(/[^\d]/g,'')});
 
@@ -65,16 +67,17 @@ function windowOnLoad() {
 		oLog.checked=(typeof res.userInfo != 'undefined' && res.userInfo.autoLogin == '0')?false:true;
     	autoLogin_click();
     	// video config
-		oPos.value=(typeof res.videoConfig != 'undefined')?res.videoConfig.videoSeekPos:"0";
 		oVsk.checked=(typeof res.videoConfig != 'undefined' && res.videoConfig.videoCanSeek == '0')?false:true;
-    	videoCanSeek_click();
     	oBlu.checked=(typeof res.videoConfig != 'undefined' && res.videoConfig.onBlurPause == '0')?false:true;
     	oVap.checked=(typeof res.videoConfig != 'undefined' && res.videoConfig.videoAutoPlay == '0')?false:true;
+		oPos.value=(typeof res.videoConfig != 'undefined')?res.videoConfig.videoSeekPos:"0";
+    	videoCanSeek_click();
 		// Course Config
     	oTip.checked=(typeof res.courseConfig != 'undefined' && res.courseConfig.courseOverTips == '0')?false:true;
     	oCap.checked=(typeof res.courseConfig != 'undefined' && res.courseConfig.chapterAutoPlay == '0')?false:true;
     	oCmt.checked=(typeof res.courseConfig != 'undefined' && res.courseConfig.oneDayLimited == '0')?false:true;
     	oDmt.value=(typeof res.courseConfig != 'undefined')?res.courseConfig.oneDayMaxTime:"0";
+    	checkMaxTime_click();
 	});
 }
 
@@ -84,15 +87,11 @@ function autoLogin_click(){
     let oUif = document.getElementById("userInfo");
     let oChk = document.getElementById('autoLogin').checked
     oUsr.disabled=(oChk)?false:true;
-    oUsr.focus();
     oPwd.disabled=(oChk)?false:true;
     oUif.style.opacity=(oChk)?"1":"0.5";
     
-	let oUserInfo={};
-	oUserInfo.autoLogin=(!oChk)?'0':'1';
-	oUserInfo.userName=oUsr.value.replace(/(^\s*)|(\s*$)/g, "");
-	oUserInfo.userPswd=oPwd.value.replace(/(^\s*)|(\s*$)/g, "");
-	chrome.storage.sync.set({'userInfo':oUserInfo}, function() {});
+	userInfo_change();
+	oUsr.focus();
 }
 
 function passwordEye_click(){
@@ -103,37 +102,45 @@ function passwordEye_click(){
 }
 
 function videoCanSeek_click(){
-	function videoCanSeek_Control() {
-		let oPos = document.getElementById("videoSeekPos");
-	    let oSek = document.getElementById("videoSeek");
-	    let oVcs = document.getElementById('videoCanSeek').checked;
-	    oPos.disabled=(oVcs)?false:true;
-	    oPos.focus();
-	    oSek.style.opacity=(oVcs)?"1":"0.5";
-	}
-	videoCanSeek_Control();
+	let oPos = document.getElementById("videoSeekPos");
+	let oSek = document.getElementById("videoSeek");
+	let oVcs = document.getElementById('videoCanSeek').checked;
+	oPos.disabled=(oVcs)?false:true;
+	oSek.style.opacity=(oVcs)?"1":"0.5";
+
 	videoSeekPos_change();
+	oPos.focus();
 }
 
 function videoSeekPos_change(){
 	let sPos = document.getElementById('videoSeekPos').value.replace(/(^\s*)|(\s*$)/g, "");
 	let oVcs = document.getElementById('videoCanSeek').checked;
-    let oBlu = document.getElementById('onBlurPause').checked;
-    let oVap = document.getElementById('videoAutoPlay').checked;
-    
-    let oVideo = {};
+	let oBlu = document.getElementById('onBlurPause').checked;
+	let oVap = document.getElementById('videoAutoPlay').checked;
+	
+	let oVideo = {};
 	oVideo.videoCanSeek=(!oVcs)?"0":"1";
 	oVideo.videoSeekPos=sPos;
 	oVideo.onBlurPause=(!oBlu)?"0":"1";
 	oVideo.videoAutoPlay=(!oVap)?"0":"1";
 
 	chrome.storage.sync.set({'videoConfig': oVideo}, function() {
-		sendMessageToContentScript({'message': _HrtDomain.message.isVideoConfig}, function(response) {
+		sendMessageToContentScript({"message": _HrtDomain.message.isVideoConfig}, function(response) {
 			console.log(response.message);
 		});
 	});
 }
 
+function checkMaxTime_click(){
+	let oCmt = document.getElementById('chkMaxTime');
+	let oChk = oCmt.checked;
+	let oDmt = document.getElementById('oneDayMaxTime');
+	oDmt.disabled=(oChk)?false:true;
+	oCmt.parentNode.parentNode.style.opacity=(oChk)?"1":"0.5";
+
+	overTips_click();
+	oDmt.focus();
+}
 
 function overTips_click(){
 	let oCot = document.getElementById('courseOverTips').checked;
@@ -145,10 +152,10 @@ function overTips_click(){
 	oCourse.courseOverTips=(!oCot)?'0':'1';
 	oCourse.chapterAutoPlay=(!oCap)?'0':'1';
 	oCourse.oneDayLimited=(!oCmt)?'0':'1';
-	oCourse.oneDayMaxTime=sDmt;
+	oCourse.oneDayMaxTime=(sDmt=="")?"0":sDmt;
 	
 	chrome.storage.sync.set({'courseConfig': oCourse}, function() {
-		sendMessageToContentScript({'message': _HrtDomain.message.isCourseConfig}, function(response) {
+		sendMessageToContentScript({"message": _HrtDomain.message.isCourseConfig}, function(response) {
 			console.log(response.message);
 		});
 	});

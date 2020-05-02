@@ -3,23 +3,29 @@
 
 const _HrtDomain = {
 	"url":{
-		"mainHost":"http://jntspx.chinahrt.com/",
-		"videoHost":"http://videoadmin1.chinahrt.com.cn/"
+		"mainHost":"http://jntspx.chinahrt.com/"
 	},
 	"message":{
 		"isVideoOver":"videoOver",
 		"isVideoReady":"videoReady",
 		"isVideoPlay":"videoPlay",
 		"isCourseOver":"isCourseOver",
-		"isDayMaxTime":"isDayMaxTime"
+		"isDayMaxTime":"isDayMaxTime",
+		"isVideoConfig":"isHrtVideoConfig"
 	}
 }
 
-const _VideoConfig = JSON.parse(document.getElementById("videoConfig").value);
+var _IsVideoReadySended = false;
+var _VideoConfig = {};
+getVideoConfig();
+
+function getVideoConfig() {
+	_VideoConfig = JSON.parse(document.getElementById("videoConfig").value);
+}
 
 // 获取当前视频的ID
 function getHrtVideoSectionID() {
-	return document.body.innerHTML.match(/(?<=attrset\.sectionId\=\")(.*)(?=\";)/g)[0];
+	return "sec_" + document.body.innerHTML.match(/(?<=attrset\.sectionId\=\")(.*)(?=\";)/g)[0];
 }
 
 // 获取video的播放时长,单位：秒
@@ -64,10 +70,10 @@ function doVideoPlay() {
 	window.attrset.ifShowPauseAd = false;
 	window.attrset.ifPauseBlur = false;
 	window.attrset.ifRecord = true;
-	if (_VideoConfig.videoAutoPlay == "1") {window.videoObject.autoplay = true;};
+	(_VideoConfig.videoAutoPlay == "1")?(window.videoObject.autoplay = true):"";
 	setVideoStartTime();
 	window.addEventListener("message", msgHandler, false);
-	setVideoControl();
+	//getVideoReadyStatus();
 	
 	function setVideoStartTime() {
 		if (_VideoConfig.videoCanSeek == "1") {
@@ -84,7 +90,7 @@ function doVideoPlay() {
 	function msgHandler(e) {
 		switch (e.data) {
 			case _HrtDomain.message.isVideoPlay:
-				doVideoControl();
+				setVideoSeekTime();
 				break;
 			case _HrtDomain.message.isCourseOver:
 				showCourseOverTips();
@@ -92,7 +98,11 @@ function doVideoPlay() {
 			case _HrtDomain.message.isDayMaxTime:
 				showDayMaxTimeTips();
 				break;
+			case _HrtDomain.message.isVideoConfig:
+				getVideoConfig();
+				break;
 			default:
+				break;
 		}
 		
 		function showCourseOverTips() {
@@ -105,9 +115,9 @@ function doVideoPlay() {
 	}
 }
 
-function setVideoControl() {
+function getVideoReadyStatus() {
 	if ($("div[class^=timetext").length == 0) {
-		setTimeout(setVideoControl, 500);
+		setTimeout(getVideoReadyStatus, 500);
 	} else {
 		// 延时2秒后发送
 		setTimeout(sendVideoReady, 2000);
@@ -127,29 +137,45 @@ function videoOverHandler() {
 }
 
 // 视频画面进行视频控制
-function doVideoControl() {
-	window.player.addListener('ended',videoOverHandler);
-	
-	if (_VideoConfig.onBlurPause == "1") {
-		window.player.removeListener("pause", pauseHandler);
-		window.onblur=function(){};
-		window.onfocus=function(){};
-	}
-	
-	/*
-	if (_VideoConfig.videoAutoPlay == "1") {
-		window.player.videoPlay();
-	}
-	*/
-	
+function setVideoSeekTime() {
 	if (_VideoConfig.videoCanSeek == "1") {
 		let nTime = 0;
 		let nSeek = parseInt(_VideoConfig.videoSeekPos);
 		if (nSeek != 0) {
 			nTime = getHrtVideoSeekTime(nSeek);
 			//window.attrset.actualLearnTime += nTime;
-			window.player.videoSeek(nTime);
+			player.videoSeek(nTime);
 		}
+	}
+}
+
+// 控制焦点离开
+function blurStop() {
+	(_VideoConfig.onBlurPause == "1")?"":player.videoPause();
+}
+
+function loadedHandler(){
+	// site code
+    attrset.maxTime=attrset.lastPlayTime;
+    player.addListener('time',timeHandler);
+    if(attrset.ifRecord){
+        setInterval("courseyunRecord()",30000);
+    }
+    player.addListener('ended',endedHandler);
+    player.addListener('seekTime',seekingHandler);
+    player.addListener('definitionChange',definitionChangeHandler);
+    player.addListener('play',playHandler);
+    // remove pauseHandler
+    // player.addListener('pause',pauseHandler);
+    // new Listener
+    player.addListener('ended',videoOverHandler);
+    player.addListener('play',playSendReadyHandler);
+}
+
+function playSendReadyHandler() {
+	if (!_IsVideoReadySended) {
+		_IsVideoReadySended = true;
+		sendVideoReady();
 	}
 }
 

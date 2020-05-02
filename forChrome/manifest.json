@@ -1,6 +1,6 @@
 {
 	"name": "国培学习助手",
-	"version": "1.0.4.8",
+	"version": "1.0.4.22",
 	"manifest_version": 2,
 	"description": "jntspx.chinahrt.com：屏蔽焦点离开自动暂停；课程章节自动学习；允许视频拖动，设置视频倒数n秒播放",
 	"author": "Jason Lee",
@@ -8,7 +8,7 @@
 	       "48": "images/icon.png",
 	       "128": "images/icon.png"
 	},
-	"browser_action": 
+	"page_action": 
 	{
 		"default_icon": "images/icon.png",
 		"default_title": "国培学习助手",
@@ -29,6 +29,7 @@
 		},
 		{
 			"matches": [
+				"*://videoadmin.chinahrt.com.cn/videoPlay/play*",
 				"*://videoadmin1.chinahrt.com.cn/videoPlay/play*"
 			],
 			"js": ["js/hrtvideocontent.js"],
@@ -39,7 +40,7 @@
 			"matches": [
 				"*://jntspx.chinahrt.com/userStudyResource/studyResourceDetailInfo*"
 			],
-			"js": ["js/jquery-3.4.1.min.js", "js/hrtstudycontent.js"],
+			"js": ["js/hrtstudycontent.js"],
 			"run_at": "document_start",
 			"all_frames": true
 		}
@@ -56,13 +57,12 @@
 		"js/hrtvideoinject.js",
 		"js/options.js",
 		"js/sweetalert.min.js",
-		"js/jquery-3.4.1.min.js",
 		"css/sweetalert.css"
 	],
 	"options_ui":{
 	    "page": "html/options.html",
 	    "chrome_style": false,
-	    "open_in_tab": false
+	    "open_in_tab": true
 	},
 	"update_url": "https://github.com/abcmouse/chinahrtAssistant",
 	"homepage_url": "https://github.com/abcmouse/chinahrtAssistant"

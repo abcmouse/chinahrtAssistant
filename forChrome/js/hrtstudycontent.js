@@ -2,8 +2,7 @@
 "use strict";
 const _HrtDomain = {
 	"url":{
-		"mainHost":"http://jntspx.chinahrt.com/",
-		"videoHost":"http://videoadmin1.chinahrt.com.cn/"
+		"mainHost":"http://jntspx.chinahrt.com/"
 	},
 	"files":{
 		"study":"js/hrtstudyinject.js"
@@ -14,15 +13,23 @@ const _HrtDomain = {
 		"isVideoPlay":"videoPlay",
 		"isCourseOver":"isCourseOver",
 		"isDayMaxTime":"isDayMaxTime",
-		"isVideoConfig":"isVideoConfig",
-		"isCourseConfig":"isCourseConfig"
+		"isCourseConfig":"isHrtCourseConfig"
 	}
 }
+var _HrtVideoHost = "";
 var _CourseConfig = {};
 var _LimitedConfig = {};
 getCourseConfig();
 getLimitedConfig();
 
+function getVideoPlayHostName() {
+	let url = document.getElementById("iframe").getAttribute("src");
+	if (url == "") {
+		setTimeout(getVideoPlayHostName, 1000);
+	} else {
+		_HrtVideoHost = url.replace(/^(.*\/\/[^\/?#]*).*$/,"$1");
+	}
+}
 
 chrome.runtime.onMessage.addListener(function(req, sender, resp) {
 	switch(req.message) {
@@ -128,6 +135,7 @@ function addCourseWindowEvent(){
 		let msg = e.data.split(':');
 		switch (msg[0]) {
 			case _HrtDomain.message.isVideoReady:
+				getVideoPlayHostName();
 				doPlayCurrentChapter();
 				break;
 			case _HrtDomain.message.isVideoOver:
@@ -147,7 +155,13 @@ function addCourseWindowEvent(){
 		// 当前视频播放
 		function doPlayCurrentChapter() {
 			if (_CourseConfig.chapterAutoPlay=='1') {
-				window.frames[0].postMessage(_HrtDomain.message.isVideoPlay, _HrtDomain.url.videoHost);
+				let oCur = document.querySelector("li.n-learning.current span");
+				if (oCur != null && oCur.innerText == "已学完") {
+					let sID = oCur.parentNode.querySelector("a").getAttribute("id");
+					doPlayNextChapter(sID);
+				} else {
+					window.frames[0].postMessage(_HrtDomain.message.isVideoPlay, _HrtVideoHost);
+				}
 			}
 		}
 		
@@ -157,15 +171,16 @@ function addCourseWindowEvent(){
 			let isNext = false;
 			for (var i=0; i<oChapters.length; i++) {
 				//找到当前章节
-				if (oChapters[i].id.indexOf(sID)!=-1) {
+				if (oChapters[i].id==sID) {
 					isNext = true;
 					if (i+1==oChapters.length) {showCourseOverTips();}
 					continue;
-				}
-				
-				if (isNext) {
+				} else if (isNext) {
 					if (_CourseConfig.chapterAutoPlay=='1' && oChapters[i].state == "已学完") {
-						if (i+1==oChapters.length) {showCourseOverTips();}
+						if (i+1==oChapters.length) {
+							showCourseOverTips();
+							return;
+						}
 						continue;
 					} else {
 						let oCour = document.getElementById(oChapters[i].id);
@@ -183,11 +198,11 @@ function addCourseWindowEvent(){
 		}
 		
 		function showDayMaxTimeTips() {
-			window.frames[0].postMessage(_HrtDomain.message.isDayMaxTime, _HrtDomain.url.videoHost);
+			window.frames[0].postMessage(_HrtDomain.message.isDayMaxTime, _HrtVideoHost);
 		}
 		
 		function showCourseOverTips() {
-			window.frames[0].postMessage(_HrtDomain.message.isCourseOver, _HrtDomain.url.videoHost);
+			window.frames[0].postMessage(_HrtDomain.message.isCourseOver, _HrtVideoHost);
 		}
 		
 		function createChapter(sID, sName, sClick, sState) {
@@ -199,9 +214,9 @@ function addCourseWindowEvent(){
 
 		function getCourseChapters() {
 			var oChapters = new Array();
-			var oCours = $("#audition-chapter");
-			var oChaps = oCours.find("a.f12.fl");
-			var oStats = oCours.find("span.f12.fr");
+			var oCours = document.getElementById("audition-chapter");
+			var oChaps = oCours.querySelectorAll("a.f12.fl");
+			var oStats = oCours.querySelectorAll("span.f12.fr");
 			if (oChaps.length > 0) {
 				for (var i=0; i<oChaps.length; i++) {
 					let sID = oChaps[i].getAttribute("id");
